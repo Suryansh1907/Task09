@@ -13,6 +13,11 @@ variable "vnet_name" {
   type        = string
 }
 
+variable "vnet_address_space" {
+  description = "The address space of the existing virtual network, used to calculate the firewall subnet address."
+  type        = string
+}
+
 variable "aks_subnet_name" {
   description = "The name of the existing AKS subnet to associate with the route table for routing traffic through the Azure Firewall."
   type        = string
