@@ -4,6 +4,7 @@ location            = "westus2"
 vnet_name           = "cmtr-eh8dj90z-mod9-vnet"
 vnet_address_space  = "10.0.0.0/16"
 aks_subnet_name     = "aks-snet"
+aks_loadbalancer_ip = " 172.179.61.82"
 app_rule_collections = {
   "aks-services" = {
     name     = "cmtr-eh8dj90z-mod9-app-rc"
