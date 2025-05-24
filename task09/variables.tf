@@ -1,28 +1,28 @@
 variable "resource_group_name" {
-  description = "Name of the resource group"
+  description = "The name of the existing resource group where the Azure Firewall and related resources will be deployed."
   type        = string
   default     = "cmtr-eh8dj90z-mod9-rg"
 }
 
 variable "location" {
-  description = "Azure region for resources"
+  description = "The Azure region where the Azure Firewall and related resources will be deployed."
   type        = string
   default     = "westus2"
 }
 
 variable "vnet_name" {
-  description = "Name of the existing virtual network"
+  description = "The name of the existing virtual network where the Azure Firewall subnet will be created."
   type        = string
   default     = "cmtr-eh8dj90z-mod9-vnet"
 }
 
 variable "aks_subnet_name" {
-  description = "Name of the existing AKS subnet"
+  description = "The name of the existing AKS subnet to associate with the route table for routing traffic through the Azure Firewall."
   type        = string
   default     = "aks-snet"
 }
 
 variable "aks_loadbalancer_ip" {
-  description = "Public IP address of the AKS load balancer"
+  description = "The public IP address of the AKS load balancer, used for DNAT rules to route traffic through the Azure Firewall."
   type        = string
 }
