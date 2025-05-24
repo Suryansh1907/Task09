@@ -35,18 +35,5 @@ variable "aks_loadbalancer_ip" {
 
 variable "app_rule_collections" {
   description = "A map of application rule collections for the Azure Firewall, defining allowed FQDNs and protocols."
-  type = map(object({
-    name     = string
-    priority = number
-    action   = string
-    rules = list(object({
-      name             = string
-      source_addresses = list(string)
-      target_fqdns     = list(string)
-      protocols = list(object({
-        port = string
-        type = string
-      }))
-    }))
-  }))
+  type        = map(any)
 }
