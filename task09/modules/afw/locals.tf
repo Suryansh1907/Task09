@@ -1,3 +1,3 @@
 locals {
-  # No resource_prefix here; moved to variables.tf
+  # No resource_prefix here; defined as a variable
 }
