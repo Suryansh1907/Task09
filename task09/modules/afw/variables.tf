@@ -1,3 +1,8 @@
+variable "resource_prefix" {
+  description = "The prefix used for naming all resources in the Azure Firewall module."
+  type        = string
+}
+
 variable "resource_group_name" {
   description = "The name of the existing resource group where the Azure Firewall and related resources will be deployed."
   type        = string

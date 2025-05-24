@@ -1,5 +1,6 @@
 module "afw" {
   source                 = "./modules/afw"
+  resource_prefix        = var.resource_prefix
   resource_group_name    = var.resource_group_name
   location               = var.location
   vnet_name              = var.vnet_name

@@ -1,12 +1,12 @@
 resource "azurerm_subnet" "firewall_subnet" {
-  name                 = "${local.resource_prefix}-afw-snet"
+  name                 = "${var.resource_prefix}-afw-snet"
   resource_group_name  = var.resource_group_name
   virtual_network_name = var.vnet_name
   address_prefixes     = [var.firewall_subnet_prefix]
 }
 
 resource "azurerm_public_ip" "firewall_pip" {
-  name                = "${local.resource_prefix}-pip"
+  name                = "${var.resource_prefix}-pip"
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
@@ -18,7 +18,7 @@ resource "azurerm_public_ip" "firewall_pip" {
 }
 
 resource "azurerm_firewall" "firewall" {
-  name                = "${local.resource_prefix}-afw"
+  name                = "${var.resource_prefix}-afw"
   location            = var.location
   resource_group_name = var.resource_group_name
   sku_name            = "AZFW_VNet"
@@ -32,7 +32,7 @@ resource "azurerm_firewall" "firewall" {
 }
 
 resource "azurerm_route_table" "firewall_rt" {
-  name                          = "${local.resource_prefix}-rt"
+  name                          = "${var.resource_prefix}-rt"
   location                      = var.location
   resource_group_name           = var.resource_group_name
   bgp_route_propagation_enabled = true
@@ -79,7 +79,7 @@ resource "azurerm_firewall_application_rule_collection" "app_rules" {
 }
 
 resource "azurerm_firewall_network_rule_collection" "net_rules" {
-  name                = "${local.resource_prefix}-net-rc"
+  name                = "${var.resource_prefix}-net-rc"
   azure_firewall_name = azurerm_firewall.firewall.name
   resource_group_name = var.resource_group_name
   priority            = 200
@@ -106,7 +106,7 @@ resource "azurerm_firewall_network_rule_collection" "net_rules" {
 }
 
 resource "azurerm_firewall_nat_rule_collection" "nat_rules" {
-  name                = "${local.resource_prefix}-nat-rc"
+  name                = "${var.resource_prefix}-nat-rc"
   azure_firewall_name = azurerm_firewall.firewall.name
   resource_group_name = var.resource_group_name
   priority            = 300
