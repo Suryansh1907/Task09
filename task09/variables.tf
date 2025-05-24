@@ -40,7 +40,6 @@ variable "app_rule_collections" {
       target_fqdns     = list(string)
       protocols = list(object({
         port = string
-        type = string
       }))
     }))
   }))
