@@ -13,10 +13,14 @@ variable "vnet_name" {
   type        = string
 }
 
+variable "vnet_address_space" {
+  description = "The address space of the existing virtual network, used to calculate the firewall subnet address."
+  type        = string
+}
+
 variable "firewall_subnet_prefix" {
   description = "The address prefix for the Azure Firewall subnet (e.g., '10.0.1.0/24')."
   type        = string
-  default     = "10.0.1.0/24"
 }
 
 variable "aks_subnet_name" {
@@ -27,4 +31,22 @@ variable "aks_subnet_name" {
 variable "aks_loadbalancer_ip" {
   description = "The public IP address of the AKS load balancer, used for DNAT rules to route traffic through the Azure Firewall."
   type        = string
+}
+
+variable "app_rule_collections" {
+  description = "A map of application rule collections for the Azure Firewall, defining allowed FQDNs and protocols."
+  type = map(object({
+    name     = string
+    priority = number
+    action   = string
+    rules = list(object({
+      name             = string
+      source_addresses = list(string)
+      target_fqdns     = list(string)
+      protocols = list(object({
+        port = string
+        type = string
+      }))
+    }))
+  }))
 }

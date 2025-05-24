@@ -53,32 +53,27 @@ resource "azurerm_subnet_route_table_association" "aks_subnet_association" {
 data "azurerm_subscription" "current" {}
 
 resource "azurerm_firewall_application_rule_collection" "app_rules" {
-  name                = "${local.resource_prefix}-app-rc"
+  for_each            = var.app_rule_collections
+  name                = each.value.name
   azure_firewall_name = azurerm_firewall.firewall.name
   resource_group_name = var.resource_group_name
-  priority            = 100
-  action              = "Allow"
+  priority            = each.value.priority
+  action              = each.value.action
 
-  rule {
-    name             = "allow_aks_services"
-    source_addresses = ["10.0.0.0/24"]
-    target_fqdns = [
-      "*.azmk8s.io",
-      "mcr.microsoft.com",
-      "*.data.mcr.microsoft.com",
-      "*.cdn.mscr.io",
-      "*.docker.io",
-      "registry-1.docker.io",
-      "*.blob.core.windows.net",
-      "*.servicebus.windows.net",
-    ]
-    protocol {
-      port = "443"
-      type = "Https"
-    }
-    protocol {
-      port = "80"
-      type = "Http"
+  dynamic "rule" {
+    for_each = each.value.rules
+    content {
+      name             = rule.value.name
+      source_addresses = rule.value.source_addresses
+      target_fqdns     = rule.value.target_fqdns
+
+      dynamic "protocol" {
+        for_each = rule.value.protocols
+        content {
+          port = protocol.value.port
+          type = protocol.value.type
+        }
+      }
     }
   }
 }
@@ -90,12 +85,23 @@ resource "azurerm_firewall_network_rule_collection" "net_rules" {
   priority            = 200
   action              = "Allow"
 
-  rule {
-    name                  = "allow_aks_network"
-    source_addresses      = ["10.0.0.0/24"]
-    destination_addresses = ["AzureCloud"]
-    destination_ports     = ["443", "80"]
-    protocols             = ["TCP"]
+  dynamic "rule" {
+    for_each = [
+      {
+        name                  = "allow_aks_network"
+        source_addresses      = ["10.0.0.0/24"]
+        destination_addresses = ["AzureCloud"]
+        destination_ports     = ["443", "80"]
+        protocols             = ["TCP"]
+      }
+    ]
+    content {
+      name                  = rule.value.name
+      source_addresses      = rule.value.source_addresses
+      destination_addresses = rule.value.destination_addresses
+      destination_ports     = rule.value.destination_ports
+      protocols             = rule.value.protocols
+    }
   }
 }
 
@@ -106,13 +112,26 @@ resource "azurerm_firewall_nat_rule_collection" "nat_rules" {
   priority            = 300
   action              = "Dnat"
 
-  rule {
-    name                  = "dnat_nginx"
-    source_addresses      = ["*"]
-    destination_ports     = ["80"]
-    destination_addresses = [azurerm_public_ip.firewall_pip.ip_address]
-    translated_port       = 80
-    translated_address    = var.aks_loadbalancer_ip
-    protocols             = ["TCP"]
+  dynamic "rule" {
+    for_each = [
+      {
+        name                  = "dnat_nginx"
+        source_addresses      = ["*"]
+        destination_ports     = ["80"]
+        destination_addresses = [azurerm_public_ip.firewall_pip.ip_address]
+        translated_port       = 80
+        translated_address    = var.aks_loadbalancer_ip
+        protocols             = ["TCP"]
+      }
+    ]
+    content {
+      name                  = rule.value.name
+      source_addresses      = rule.value.source_addresses
+      destination_ports     = rule.value.destination_ports
+      destination_addresses = rule.value.destination_addresses
+      translated_port       = rule.value.translated_port
+      translated_address    = rule.value.translated_address
+      protocols             = rule.value.protocols
+    }
   }
 }
