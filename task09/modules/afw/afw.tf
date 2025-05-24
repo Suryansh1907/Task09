@@ -1,5 +1,5 @@
 resource "azurerm_subnet" "firewall_subnet" {
-  name                 = "${var.resource_prefix}-afw-snet"
+  name                 = "AzureFirewallSubnet"
   resource_group_name  = var.resource_group_name
   virtual_network_name = var.vnet_name
   address_prefixes     = [var.firewall_subnet_prefix]
